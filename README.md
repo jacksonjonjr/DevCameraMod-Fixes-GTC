@@ -6,20 +6,22 @@ This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not 
 
 # Update changes:
 
-- [X] fixed all sliders
-- [X] made the update checker text more "friendly" lol
-- [X] make it so the source code isn't in 2 subfolders
-- [X] fixed camera movement in Enhanced camera
+- [X] fixed all sliders.
+- [X] made the text a bit more friendly and put a random filler.
+- [X] make it so the source code isn't in 2 subfolders.
+- [X] fixed camera movement in Enhanced camera.
 - [X] Temporarily removed the ability to disable CGT sponsors.
-- [X] Small beauty changes
-- [X] Fixed menu hiding
-- [X] Added yellow for 2 second rule and gray for countdown in timer colors
+- [X] Small beauty changes.
+- [X] Fixed menu hiding.
+- [X] Added yellow for 2 second rule and gray for countdown in timer colors.
 
 # TODO: 
 
+- [ ] Update Checker
+- [ ] Shrink menu size
 - [ ] Add the ability to disable CGT sponsors.
-- [ ] Reformat and rewrite a bit of da code. ex: CameraModes
-- [ ] Arena Mode
+- [ ] Reformat and rewrite a bit of da code. ex: CameraModes.
+- [ ] Arena Mode.
 
 # Sakuraa's Note:
 
