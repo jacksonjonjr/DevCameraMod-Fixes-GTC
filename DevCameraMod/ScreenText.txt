@@ -1,1 +1,1 @@
-﻿<color=white>If you share this mod, it will stop being updated.</color>
+﻿<color=#ff66ff>If you share this mod, it will stop being updated.</color>
