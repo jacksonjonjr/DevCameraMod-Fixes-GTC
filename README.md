@@ -20,6 +20,6 @@ This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not 
 
 # Sakuraa's Note:
 
-Please keep in mind that I barely know C#, I have the smallest brain cells when it comes to c#. Don't come back at me angry cuz you don't like my changes, just use the original devs if you dont, my discord is Sakuraa#1930 if you have any suggestions!
+Please keep in mind that I barely know C#, I have the smallest brain cells when it comes to c#. Don't come back at me angry cuz you don't like my changes, just use the original devs if you dont, my discord is `Sakuraa#1930` if you have any suggestions!
 
 DEVS DISCORD: https://discord.gg/dev9998
