@@ -10,6 +10,7 @@ This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not 
 - [X] make it so the source code isn't in 2 subfolders
 - [X] fixed camera movement in Enhanced camera
 - [X] Temporarily removed the ability to disable CGT sponsors.
+- [X] Small beuty changes
 
 # TODO: 
 
