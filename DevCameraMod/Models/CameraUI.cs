@@ -24,6 +24,7 @@ namespace DevCameraMod.Models
         public Text codeSecret;
         public Text scoreHeader;
         public double timeStamp;
+        public Transform Sponsors;
 
         public string LeftTeamName = "left";
         public string RightTeamName = "right";

@@ -33,6 +33,7 @@ namespace DevCameraMod
         public GameObject nametagBase;
         public AudioListener playerListener;
         public AudioListener cameraListener;
+        public GorillaCameraFollow follower;
 
         // Camera objects
         public Camera camera;
@@ -167,6 +168,7 @@ namespace DevCameraMod
             fixedCameraNames.Add("VR");
             fixedCameras.Add(GorillaLocomotion.Player.Instance.GetComponentInChildren<Camera>().cullingMask);
             fixedCameraNames.Add("Spectator");
+            fixedCameras.Add(camera.cullingMask);
 
             cameraUI = new CameraUI();
 
@@ -197,6 +199,9 @@ namespace DevCameraMod
             cameraUI.version2 = uiObject.transform.Find("VersionTexA").GetComponent<Text>();
             cameraUI.codeSecret = uiObject.transform.Find("Scoreheader (1)").GetComponent<Text>();
             cameraUI.scoreHeader = uiObject.transform.Find("Scoreheader").GetComponent<Text>();
+            cameraUI.Sponsors = uiObject.transform.Find("Sponsors");
+
+            follower = FindObjectOfType<GorillaCameraFollow>();
 
             cameraUI.canvas.enabled = false;
             cameraUI.leftTeam.text = "left";
@@ -240,7 +245,7 @@ namespace DevCameraMod
                 while (true)
                 {
                     Thread.Sleep(5000);
-                    string webData = webClient.DownloadString("https://raw.githubusercontent.com/developer9998/DevCameraMod/main/DevCameraMod/DevCameraMod/ScreenText.txt");
+                    string webData = webClient.DownloadString("https://raw.githubusercontent.com/HuddleX/DevCameraMod-Fixes/main/DevCameraMod/ScreenText.txt"); // update if ever pulled to original
 
                     cameraUI.versionTex.text = webData;
                 }
@@ -267,12 +272,12 @@ namespace DevCameraMod
             OnModeChange();
         }
 
-        [STAThread]
+        public bool show;
         protected void OnGUI()
         {
             if (ShowMenu)
             {
-                if (GUI.Button(new Rect(25, 25, 180, 20), $"{(!ShowFrame ? "Open" : "Close")} Spectator Menu"))
+                if (GUI.Button(new Rect(25, 25, 180, 20), $"{(!ShowFrame ? "Open" : "Close")} Spectator Menu [F1]"))
                 {
                     if (click != null) GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(click);
                     ShowFrame = !ShowFrame;
@@ -282,7 +287,7 @@ namespace DevCameraMod
                 {
                     int modesWhenNotInRoom = 2;
                     int moesWhenInRoom = 7;
-                    GUI.Box(new Rect(25, 60, 180, canvasScaleCurrent), "Dev's Camera Mod v" + PluginInfo.Version);
+                    GUI.Box(new Rect(25, 60, 180, canvasScaleCurrent), "Dev Camera Mod v" + PluginInfo.Version);
 
                     GUI.Label(new Rect((180 / 2) - 30, 100, 180, 20), fixedCameraModeName[cameraMode]);
 
@@ -339,6 +344,10 @@ namespace DevCameraMod
                         GUI.Label(new Rect(60, optionPosition, 160, 20), $"Camera listener: {(listener ? "On" : "Off")}");
                         float listenerFloat = GUI.HorizontalSlider(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), listener == true ? 1 : 0, 0, 1);
 
+                        optionPosition += 40;
+                        GUI.Label(new Rect(60, optionPosition, 160, 20), $"CGT sponsors: {(show ? "On" : "Off")}");
+                        float sponsor = GUI.HorizontalSlider(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), show == true ? 1 : 0, 0, 1);
+
                         optionPosition += 50;
                         GUI.Label(new Rect(60, optionPosition, 160, 20), $"Left team: {cameraUI.LeftTeamName}");
                         string teamName = GUI.TextArea(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), cameraUI.LeftTeamName, 200);
@@ -362,6 +371,9 @@ namespace DevCameraMod
                         }
 
                         listener = listenerFloat == 1;
+                        show = sponsor == 1;
+
+                        if (cameraUI.Sponsors != null) cameraUI.Sponsors.gameObject.SetActive(show);
 
                         canvasSize = optionPosition;
                     }
@@ -412,7 +424,6 @@ namespace DevCameraMod
                                 if (GUI.Button(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), "Paste"))
                                 {
                                     if (click != null) GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(click);
-
                                     string codeTemp = GUIUtility.systemCopyBuffer.ToUpper();
                                     if (codeTemp.IsNullOrWhiteSpace()) return;
                                     if (codeTemp.Length >= 13) codeTemp = codeTemp.Substring(0, 12);
@@ -1108,7 +1119,7 @@ namespace DevCameraMod
                     scoreboardUpdate = Time.time + 0.5f;
                     cameraUI.scoreboardText.text = "";
                     cameraUI.scoreboardText2.text = "";
-                    cameraUI.scoreHeader.text = $"Scoreboard (Ping: {PhotonNetwork.GetPing()})";
+                    cameraUI.scoreHeader.text = $"Scoreboard (Caster Ping: {PhotonNetwork.GetPing()})";
                     for (int i = 0; i < GorillaParent.instance.vrrigs.Count; i++)
                     {
                         string col = GorillaParent.instance.vrrigs[i].setMatIndex == 0 ? ColorUtility.ToHtmlStringRGBA(GorillaParent.instance.vrrigs[i].materialsToChangeTo[0].color) : "751C00";
@@ -1131,19 +1142,37 @@ namespace DevCameraMod
                 if (Keyboard.current.hKey.wasPressedThisFrame) cameraUI.AdjustTeam(true, false);
                 if (Keyboard.current.jKey.wasPressedThisFrame) cameraUI.AdjustTeam(false, false);
 
-                if (Keyboard.current.vKey.wasPressedThisFrame) timeStart = timeStart = true;
-                if (Keyboard.current.bKey.wasPressedThisFrame) timeStart = timeStart = !timeStart;
-                if (Keyboard.current.nKey.wasPressedThisFrame)
+                if (Keyboard.current.vKey.wasPressedThisFrame) timeStart = timeStart = true; // start
+                if (Keyboard.current.bKey.wasPressedThisFrame) timeStart = timeStart = !timeStart; // pause
+                if (Keyboard.current.nKey.wasPressedThisFrame) // reset
                 {
                     timeStart = false;
                     currentTime = -10;
                     hasPassedzero = false;
                 }
 
-                if (Keyboard.current.mKey.wasPressedThisFrame) UpdateLap();
+                if (Keyboard.current.mKey.wasPressedThisFrame) UpdateLap(); // lap
 
-                if (currentTime >= lapTime) cameraUI.lapTime.color = Color.green;
-                else cameraUI.lapTime.color = Color.red;
+                if (currentTime < 0)
+                {
+                    cameraUI.currentTime.color = Color.gray;
+                    cameraUI.lapTime.color = Color.red;
+                }
+                else if (currentTime >= lapTime + 2)
+                {
+                    cameraUI.lapTime.color = Color.green;
+                    cameraUI.currentTime.color = Color.white;
+                }
+                else if (lapTime - currentTime <= 2)
+                {
+                    cameraUI.lapTime.color = Color.yellow;
+                    cameraUI.currentTime.color = Color.white;
+                }
+                else
+                {
+                    cameraUI.currentTime.color = Color.white;
+                    cameraUI.lapTime.color = Color.red;
+                }
 
                 if (timeStart) currentTime += (double)Time.deltaTime;
 
@@ -1159,6 +1188,7 @@ namespace DevCameraMod
                 string fixedMilliseconds = $"{(patchedMilliseconds.Length >= 2 ? patchedMilliseconds.Substring(0, 2) : (patchedMilliseconds.Length == 1 ? string.Format("0{0}", patchedMilliseconds) : patchedMilliseconds))}";
                 cameraUI.currentTime.text = $"{(timeSpan.Minutes.ToString() == "0" ? "" : (patchedHours == "0" ? string.Format("{0}:", timeSpan.Minutes) : string.Format("{1}:{0}:", patchedMinutes.Length == 1 ? string.Format("0{0}", patchedMinutes) : patchedMinutes, patchedHours)))}{fixedSeconds}.{fixedMilliseconds}";
             }
+
 
             try
             {
