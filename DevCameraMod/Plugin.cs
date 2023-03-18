@@ -1091,7 +1091,7 @@ namespace DevCameraMod
                 if (type != null) GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(type);
             }
 
-            if (Keyboard.current.f4Key.wasPressedThisFrame && isAllowed)
+            if (Keyboard.current.f4Key.wasPressedThisFrame)
             {
                 canBeShown = !canBeShown;
                 if (canBeShown) cameraUI.canvas.enabled = shouldBeEnabled;
