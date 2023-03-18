@@ -167,7 +167,6 @@ namespace DevCameraMod
             fixedCameraNames.Add("VR");
             fixedCameras.Add(GorillaLocomotion.Player.Instance.GetComponentInChildren<Camera>().cullingMask);
             fixedCameraNames.Add("Spectator");
-            fixedCameras.Add(camera.cullingMask);
 
             cameraUI = new CameraUI();
 
@@ -200,8 +199,8 @@ namespace DevCameraMod
             cameraUI.scoreHeader = uiObject.transform.Find("Scoreheader").GetComponent<Text>();
 
             cameraUI.canvas.enabled = false;
-            cameraUI.leftTeam.text = "null";
-            cameraUI.rightTeam.text = "null";
+            cameraUI.leftTeam.text = "left";
+            cameraUI.rightTeam.text = "right";
 
             UpdateLap();
 
@@ -321,14 +320,14 @@ namespace DevCameraMod
 
                         if (cameraMode == CameraModes.Freecam)
                         {
-                            GUI.Label(new Rect(60, optionPosition, 160, 20), $"Camera Speed: {(currentSpeed.ToString().Length >= 3 ? currentSpeed.ToString().Substring(0, 3) : currentSpeed.ToString())}");
+                            GUI.Label(new Rect(60, optionPosition, 160, 20), $"FreeCam Speed: {(currentSpeed.ToString().Length >= 3 ? currentSpeed.ToString().Substring(0, 3) : currentSpeed.ToString())}");
                             currentSpeed = GUI.HorizontalSlider(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), currentSpeed, 0, 5);
                             optionPosition += 50;
                         }
 
-                        GUI.Label(new Rect(50, optionPosition, 160, 70), $"Position         Rotation");
-                        cameraLerp = GUI.HorizontalSlider(new Rect(25 + 5, optionPosition + 30, 160 / 2, 20), cameraLerp, 0.02f, 0.3f);
-                        quatLerp = GUI.HorizontalSlider(new Rect(180 - 65, optionPosition + 30, 160 / 2, 20), quatLerp, 0.02f, 0.3f);
+                        GUI.Label(new Rect(40, optionPosition, 180, 70), $"    Smoothing Speed:\nMovement        Rotation");
+                        cameraLerp = GUI.HorizontalSlider(new Rect(25 + 5, optionPosition + 37, 160 / 2, 20), cameraLerp, 0.02f, 0.3f);
+                        quatLerp = GUI.HorizontalSlider(new Rect(180 - 65, optionPosition + 37, 160 / 2, 20), quatLerp, 0.02f, 0.3f);
 
                         optionPosition += 50;
 
@@ -345,7 +344,7 @@ namespace DevCameraMod
                         string teamName = GUI.TextArea(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), cameraUI.LeftTeamName, 200);
 
                         optionPosition += 50;
-                        GUI.Label(new Rect(60, optionPosition, 160, 20), $"Right team: {cameraUI.LeftTeamName}");
+                        GUI.Label(new Rect(60, optionPosition, 160, 20), $"Right team: {cameraUI.RightTeamName}");
                         string rightTeamName = GUI.TextArea(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), cameraUI.RightTeamName, 200);
 
                         if (teamName.Length <= 7 && lastLeftName != teamName)
@@ -410,7 +409,7 @@ namespace DevCameraMod
                             if (joinText == "Join")
                             {
                                 optionPosition += 28;
-                                if (GUI.Button(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), "Join via. Copy"))
+                                if (GUI.Button(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), "Paste"))
                                 {
                                     if (click != null) GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(click);
 
