@@ -25,8 +25,8 @@ namespace DevCameraMod.Models
         public Text scoreHeader;
         public double timeStamp;
 
-        public string LeftTeamName = "null";
-        public string RightTeamName = "null";
+        public string LeftTeamName = "left";
+        public string RightTeamName = "right";
 
         public void AdjustTeam(bool add, bool team)
         {
