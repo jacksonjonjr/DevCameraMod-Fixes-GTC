@@ -1,1 +1,1 @@
-﻿<color=yellow>Outdated camera mod version (1.2.1)</color>
+﻿<color=pink>Contributions by Sakuraa</color>
