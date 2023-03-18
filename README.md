@@ -11,6 +11,8 @@ This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not 
 - [X] fixed camera movement in Enhanced camera
 - [X] Temporarily removed the ability to disable CGT sponsors.
 - [X] Small beauty changes
+- [X] Fixed menu hiding
+- [X] Added yellow for 2 second rule and gray for countdown in timer colors
 
 # TODO: 
 
