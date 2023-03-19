@@ -7,19 +7,17 @@ This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not 
 # Update changes:
 
 - [X] fixed all sliders.
-- [X] made the text a bit more friendly and put a random filler.
-- [X] make it so the source code isn't in 2 subfolders.
-- [X] fixed camera movement in Enhanced camera.
+- [X] Made the text a bit more friendly and put a random filler.
+- [X] Made it so the source code isn't in 2 subfolders.
+- [X] Fixed camera movement in Enhanced camera.
 - [X] Temporarily removed the ability to disable CGT sponsors.
 - [X] Small beauty changes.
 - [X] Fixed menu hiding.
 - [X] Added yellow for 2 second rule and gray for countdown in timer colors.
-- [X] Update Checker
-- [X] Made it so timer is Cyan (light blue) when you timecap (3 mins)
-- [X] Added sound to F1, F2, F3, F4, timer start, pause, lap, reset, team score updates
-- [X] Fixed Player Focus
-- [X] Fixed Random Focus
-- [X] Fixed Tagger Focus
+- [X] Added an Update Checker.
+- [X] Made it so timer is Cyan (light blue) when you timecap. (3 mins)
+- [X] Added sound to F1, F2, F3, F4, timer start, pause, lap, reset, team score updates.
+- [X] Fixed Runner Focus, Random Focus, Fixed Tagger gui (timer and teams) not showing up.
 
 # TODO: 
 
