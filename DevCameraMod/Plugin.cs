@@ -260,7 +260,7 @@ namespace DevCameraMod
                         cameraUI.versionTex.text = $"<color=Red>You are using an outdated version.\n" +
                                                               $"  Please update your mod here: \n" +
                                                               $"    tinyurl.com/updateDCM</color>"; // update this if it ever gets pulled
-                        Application.OpenURL("https://github.com/HuddleX/DevCameraMod-Fixes"); // opens source code (would normally be the download link to teh latestupdate this if it ever gets pulled
+                        Application.OpenURL("https://updatemod.carrd.co"); // opens source code (would normally be the download link to teh latestupdate this if it ever gets pulled
                     }
                     else
                     {
@@ -1108,6 +1108,7 @@ namespace DevCameraMod
             {
                 firstperson = !firstperson;
                 OnFirstPersonToggle();
+                if (type != null) GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(type);
             }
 
             if (Keyboard.current.leftCtrlKey.wasPressedThisFrame) SwitchModePress(true, 7, 7);
@@ -1166,20 +1167,44 @@ namespace DevCameraMod
             if (cameraUI.canvas.enabled)
             {
                 if (Keyboard.current.fKey.wasPressedThisFrame) cameraUI.AdjustTeam(true, true);
-                if (Keyboard.current.gKey.wasPressedThisFrame) cameraUI.AdjustTeam(false, true);
-                if (Keyboard.current.hKey.wasPressedThisFrame) cameraUI.AdjustTeam(true, false);
-                if (Keyboard.current.jKey.wasPressedThisFrame) cameraUI.AdjustTeam(false, false);
+                if (Keyboard.current.fKey.wasPressedThisFrame) GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(click);
 
-                if (Keyboard.current.vKey.wasPressedThisFrame) timeStart = timeStart = true; // start
-                if (Keyboard.current.bKey.wasPressedThisFrame) timeStart = timeStart = !timeStart; // pause
+                if (Keyboard.current.gKey.wasPressedThisFrame) cameraUI.AdjustTeam(false, true);
+                if (Keyboard.current.gKey.wasPressedThisFrame) GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(click);
+
+                if (Keyboard.current.hKey.wasPressedThisFrame) cameraUI.AdjustTeam(true, false);
+                if (Keyboard.current.hKey.wasPressedThisFrame) GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(click);
+
+                if (Keyboard.current.jKey.wasPressedThisFrame) cameraUI.AdjustTeam(false, false);
+                if (Keyboard.current.jKey.wasPressedThisFrame) GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(click);
+
+
+                if (Keyboard.current.vKey.wasPressedThisFrame)
+                {
+                    timeStart = true; // start the timer
+                    GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(click);
+                    GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(type);
+                }
+
+                if (Keyboard.current.bKey.wasPressedThisFrame)
+                {
+                    timeStart = timeStart = !timeStart; // pause
+                    GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(click);
+                }
+
                 if (Keyboard.current.nKey.wasPressedThisFrame) // reset
                 {
                     timeStart = false;
                     currentTime = -10;
                     hasPassedzero = false;
+                    GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(click);
                 }
 
-                if (Keyboard.current.mKey.wasPressedThisFrame) UpdateLap(); // lap
+                if (Keyboard.current.mKey.wasPressedThisFrame)
+                {
+                    UpdateLap(); // lap
+                    GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(click);
+                }
 
                 if (currentTime < 0)
                 {
@@ -1189,7 +1214,8 @@ namespace DevCameraMod
                 else if (currentTime >= lapTime + 2)
                 {
                     cameraUI.lapTime.color = Color.green;
-                    cameraUI.currentTime.color = Color.white;
+                    if (currentTime > 180) cameraUI.currentTime.color = Color.cyan;
+                    else cameraUI.currentTime.color = Color.white;
                 }
                 else if (lapTime - currentTime <= 2)
                 {
