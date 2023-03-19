@@ -221,33 +221,40 @@ namespace DevCameraMod
             thread.Start();
         }
 
-        public async void GetAllowed()
-        {
-            HttpClient client = new HttpClient();
-            string result = await client.GetStringAsync("https://github.com/developer9998/DevCameraMod/blob/main/DevCameraMod/DevCameraMod/Allowed.txt");
-            using (StringReader reader = new StringReader(result))
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null) if (PhotonNetwork.LocalPlayer.UserId == line) isAllowed = true;
-            }
-
-            client.Dispose();
-        }
-
         void UpdateThead()
         {
             Thread.Sleep(10000);
-            GetAllowed();
             webClient = new WebClient();
-            cameraUI.version2.text = PluginInfo.Name + $"{(isAllowed ? string.Empty : "Free")} v" + PluginInfo.Version;
+            cameraUI.version2.text = PluginInfo.Name + $" v" + PluginInfo.Version;
             try
             {
                 while (true)
                 {
                     Thread.Sleep(5000);
-                    string webData = webClient.DownloadString("https://raw.githubusercontent.com/HuddleX/DevCameraMod-Fixes/main/DevCameraMod/ScreenText.txt"); // update if ever pulled to original
+                    string webData = webClient.DownloadString("https://raw.githubusercontent.com/HuddleX/DevCameraMod-Fixes/main/DevCameraMod/ScreenText.txt");
 
                     cameraUI.versionTex.text = webData;
+                }
+            }
+            finally { webClient.Dispose(); }
+            try
+            {
+                using (WebClient webClient = new WebClient())
+                {
+                    string NewestVersion = webClient.DownloadString("https://raw.githubusercontent.com/HuddleX/DevCameraMod-Fixes/main/DevCameraMod/Version.txt"); // Update check
+                    if (PluginInfo.Version == NewestVersion)
+                    {
+                        while (true)
+                        {
+                            Thread.Sleep(5000);
+                            string LatestVer_Text = webClient.DownloadString("https://raw.githubusercontent.com/HuddleX/DevCameraMod-Fixes/main/DevCameraMod/ScreenText.txt"); // update if ever pulled to original
+                            cameraUI.versionTex.text = LatestVer_Text;
+                        }
+                    }
+                    else
+                    {
+                        cameraUI.versionTex.text = $"<color=Red>You are using an outdated version.\n</color>";
+                    }
                 }
             }
             finally { webClient.Dispose(); }

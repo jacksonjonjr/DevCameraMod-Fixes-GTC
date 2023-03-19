@@ -14,10 +14,10 @@ This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not 
 - [X] Small beauty changes.
 - [X] Fixed menu hiding.
 - [X] Added yellow for 2 second rule and gray for countdown in timer colors.
+- [X] Update Checker
 
 # TODO: 
 
-- [ ] Update Checker
 - [ ] Shrink menu size
 - [ ] Add the ability to disable CGT sponsors.
 - [ ] Reformat and rewrite a bit of da code. ex: CameraModes.
