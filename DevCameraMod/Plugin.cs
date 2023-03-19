@@ -1214,7 +1214,12 @@ namespace DevCameraMod
                 else if (currentTime >= lapTime + 2)
                 {
                     cameraUI.lapTime.color = Color.green;
-                    if (currentTime > 180) cameraUI.currentTime.color = Color.cyan;
+                    if (currentTime > 180)
+                    {
+                        cameraUI.currentTime.color = Color.cyan;
+                        timeStart = false;
+                    }
+
                     else cameraUI.currentTime.color = Color.white;
                 }
                 else if (lapTime - currentTime <= 2)
