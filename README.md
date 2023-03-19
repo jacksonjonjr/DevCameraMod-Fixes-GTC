@@ -15,8 +15,11 @@ This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not 
 - [X] Fixed menu hiding.
 - [X] Added yellow for 2 second rule and gray for countdown in timer colors.
 - [X] Update Checker
-- [X] Added color for timecap
-- [X] Added more sounds to features in the menu and on your keyboard
+- [X] Made it so timer is Cyan (light blue) when you timecap (3 mins)
+- [X] Added sound to F1, F2, F3, F4, timer start, pause, lap, reset, team score updates
+- [X] Fixed Player Focus
+- [X] Fixed Random Focus
+- [X] Fixed Tagger Focus
 
 # TODO: 
 
