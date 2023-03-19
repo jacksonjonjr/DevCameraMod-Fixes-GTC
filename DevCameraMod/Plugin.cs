@@ -228,17 +228,6 @@ namespace DevCameraMod
             cameraUI.version2.text = PluginInfo.Name + $" v" + PluginInfo.Version;
             try
             {
-                while (true)
-                {
-                    Thread.Sleep(5000);
-                    string webData = webClient.DownloadString("https://raw.githubusercontent.com/HuddleX/DevCameraMod-Fixes/main/DevCameraMod/ScreenText.txt");
-
-                    cameraUI.versionTex.text = webData;
-                }
-            }
-            finally { webClient.Dispose(); }
-            try
-            {
                 using (WebClient webClient = new WebClient())
                 {
                     string NewestVersion = webClient.DownloadString("https://raw.githubusercontent.com/HuddleX/DevCameraMod-Fixes/main/DevCameraMod/Version.txt"); // Update check
@@ -253,7 +242,10 @@ namespace DevCameraMod
                     }
                     else
                     {
-                        cameraUI.versionTex.text = $"<color=Red>You are using an outdated version.\n</color>";
+                        cameraUI.versionTex.text = $"<color=Red>You are using an outdated version.\n" +
+                                                              $"  Please update your mod here: \n" +
+                                                              $"    tinyurl.com/devcammod</color>"; // update this if it ever gets pulled
+                        Application.OpenURL("https://github.com/HuddleX/DevCameraMod-Fixes"); // update this if it ever gets pulled
                     }
                 }
             }
