@@ -15,6 +15,8 @@ This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not 
 - [X] Fixed menu hiding.
 - [X] Added yellow for 2 second rule and gray for countdown in timer colors.
 - [X] Update Checker
+- [X] Added color for timecap
+- [X] Added more sounds to features in the menu and on your keyboard
 
 # TODO: 
 
