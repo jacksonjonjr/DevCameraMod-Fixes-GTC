@@ -230,8 +230,39 @@ namespace DevCameraMod
             {
                 using (WebClient webClient = new WebClient())
                 {
-                    string NewestVersion = webClient.DownloadString("https://raw.githubusercontent.com/HuddleX/DevCameraMod-Fixes/main/DevCameraMod/Version.txt"); // Update check
-                    if (PluginInfo.Version == NewestVersion)
+                    string NewestVersion = webClient.DownloadString("https://raw.githubusercontent.com/HuddleX/DevCameraMod-Fixes/main/DevCameraMod/Version.txt").Trim(); // Update check
+                    string[] newestVersionParts = NewestVersion.Split('.');
+                    string[] currentVersionParts = PluginInfo.Version.Split('.');
+
+                    if (newestVersionParts.Length != currentVersionParts.Length)
+                    {
+                        throw new Exception("Invalid version number format");
+                    }
+
+                    bool isOutdated = false;
+                    for (int i = 0; i < newestVersionParts.Length; i++)
+                    {
+                        int newestPart = int.Parse(newestVersionParts[i]);
+                        int currentPart = int.Parse(currentVersionParts[i]);
+                        if (newestPart > currentPart)
+                        {
+                            isOutdated = true;
+                            break;
+                        }
+                        else if (newestPart < currentPart)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (isOutdated)
+                    {
+                        cameraUI.versionTex.text = $"<color=Red>You are using an outdated version.\n" +
+                                                              $"  Please update your mod here: \n" +
+                                                              $"    tinyurl.com/updateDCM</color>"; // update this if it ever gets pulled
+                        Application.OpenURL("https://github.com/HuddleX/DevCameraMod-Fixes"); // opens source code (would normally be the download link to teh latestupdate this if it ever gets pulled
+                    }
+                    else
                     {
                         while (true)
                         {
@@ -240,14 +271,12 @@ namespace DevCameraMod
                             cameraUI.versionTex.text = LatestVer_Text;
                         }
                     }
-                    else
-                    {
-                        cameraUI.versionTex.text = $"<color=Red>You are using an outdated version.\n" +
-                                                              $"  Please update your mod here: \n" +
-                                                              $"    tinyurl.com/devcammod</color>"; // update this if it ever gets pulled
-                        Application.OpenURL("https://github.com/HuddleX/DevCameraMod-Fixes"); // update this if it ever gets pulled
-                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error checking for updates: {ex.Message}");
+                cameraUI.versionTex.text = "Error checking for updates";
             }
             finally { webClient.Dispose(); }
         }
