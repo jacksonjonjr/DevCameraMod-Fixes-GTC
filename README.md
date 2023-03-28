@@ -4,6 +4,8 @@ DevCameraMod is a mod for Gorilla Tag used for recording Competitive scrims and 
 ## Legal 
 This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not endorsed or otherwise sponsored by Another Axiom LLC. Portions of the materials contained herein are property of Another Axiom LLC. ©2021 Another Axiom LLC.
 
+# Compiled version of the mod will not be released. Compile it yourself if you care that much :0, also following dev's rules to not share dll. (creator of camera mod)
+
 # Update changes:
 
 - [X] fixed all sliders.
