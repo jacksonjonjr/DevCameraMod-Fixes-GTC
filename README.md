@@ -23,6 +23,7 @@ This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not 
 
 # TODO: 
 
+- [ ] Change camera to follow head and not body
 - [ ] Shrink menu size
 - [ ] Add the ability to disable CGT sponsors.
 - [ ] Reformat and rewrite a bit of da code. ex: CameraModes.
