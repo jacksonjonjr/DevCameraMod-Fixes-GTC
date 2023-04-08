@@ -21,9 +21,11 @@ This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not 
 - [X] Added sound to F1, F2, F3, F4, timer start, pause, lap, reset, team score updates.
 - [X] Fixed Runner Focus, Random Focus, Fixed Tagger gui (timer and teams) not showing up.
 - [X] Change camera to follow head and not body
+- [X] create options for follow head / body
+- [X] Perspective Slider
+- [X] NameTag Slider
 
 # TODO: 
-- [ ] create options for follow head / body
 - [ ] Shrink menu size
 - [ ] Add the ability to disable CGT sponsors.
 - [ ] Reformat and rewrite a bit of da code. ex: CameraModes.
