@@ -148,7 +148,6 @@ namespace DevCameraMod
         protected void Awake()
         {
             Instance = this;
-
             HarmonyPatches.HarmonyPatches.ApplyHarmonyPatches();
         }
 
@@ -199,7 +198,6 @@ namespace DevCameraMod
             cameraUI.version2 = uiObject.transform.Find("VersionTexA").GetComponent<Text>();
             cameraUI.codeSecret = uiObject.transform.Find("Scoreheader (1)").GetComponent<Text>();
             cameraUI.scoreHeader = uiObject.transform.Find("Scoreheader").GetComponent<Text>();
-            cameraUI.Sponsors = uiObject.transform.Find("Sponsors");
 
             follower = FindObjectOfType<GorillaCameraFollow>();
 
@@ -372,10 +370,6 @@ namespace DevCameraMod
                         GUI.Label(new Rect(60, optionPosition, 160, 20), $"Camera listener: {(listener ? "On" : "Off")}");
                         float listenerFloat = GUI.HorizontalSlider(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), listener == true ? 1 : 0, 0, 1);
 
-                        optionPosition += 40;
-                        GUI.Label(new Rect(60, optionPosition, 160, 20), $"CGT sponsors: {(show ? "On" : "Off")}");
-                        float sponsor = GUI.HorizontalSlider(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), show == true ? 1 : 0, 0, 1);
-
                         optionPosition += 50;
                         GUI.Label(new Rect(60, optionPosition, 160, 20), $"Left team: {cameraUI.LeftTeamName}");
                         string teamName = GUI.TextArea(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), cameraUI.LeftTeamName, 200);
@@ -399,9 +393,6 @@ namespace DevCameraMod
                         }
 
                         listener = listenerFloat == 1;
-                        show = sponsor == 1;
-
-                        if (cameraUI.Sponsors != null) cameraUI.Sponsors.gameObject.SetActive(show);
 
                         canvasSize = optionPosition;
                     }
@@ -1035,12 +1026,11 @@ namespace DevCameraMod
 
         public Vector3 GetPositionBasedOnRig(VRRig rig)
         {
-            Transform head = rig.headMesh.transform.parent;
-            Vector3 position = head.position;
+            Transform head = rig.headMesh.transform;
+            Vector3 position = head.position + head.forward * 1.75f * -1;
 
-            position += head.forward * (forward);
-            position += head.right * (right);
-            position += head.up * (up);
+            position += rig.headMesh.transform.right * 0.25f;
+            position += rig.headMesh.transform.up * 0.1f;
 
             return position;
         }
@@ -1048,7 +1038,8 @@ namespace DevCameraMod
         public Quaternion GetRotationBasedOnRig(VRRig rig)
         {
             Transform head = rig.headMesh.transform;
-            Vector3 position = GetPositionBasedOnRig(rig);
+            Vector3 position = head.position + head.forward * 1.75f * -1;
+            position += -rig.headMesh.transform.up * 0.275f;
 
             Vector3 relativePos = head.position - position;
             Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
@@ -1064,7 +1055,7 @@ namespace DevCameraMod
             string patchedMilliseconds = timeSpan.Milliseconds.ToString().Replace("-", "");
             string patchedSeconds = timeSpan.Seconds.ToString();
             string patchedMinutes = timeSpan.Minutes.ToString();
-            string patchedHours = timeSpan.Hours.ToString(); // no way lmao
+            string patchedHours = timeSpan.Hours.ToString(); // no way lmao, hi
 
             string fixedSeconds = $"{(patchedMinutes != "0" ? (patchedSeconds.Length == 1 ? string.Format("0{0}", patchedSeconds) : patchedSeconds) : patchedSeconds)}";
             string fixedMilliseconds = $"{(patchedMilliseconds.Length >= 2 ? patchedMilliseconds.Substring(0, 2) : (patchedMilliseconds.Length == 1 ? string.Format("0{0}", patchedMilliseconds) : patchedMilliseconds))}";

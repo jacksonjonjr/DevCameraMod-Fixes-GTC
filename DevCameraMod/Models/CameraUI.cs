@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oculus.Platform;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,10 +25,11 @@ namespace DevCameraMod.Models
         public Text codeSecret;
         public Text scoreHeader;
         public double timeStamp;
-        public Transform Sponsors;
 
         public string LeftTeamName = "left";
         public string RightTeamName = "right";
+
+        
 
         public void AdjustTeam(bool add, bool team)
         {
