@@ -376,6 +376,14 @@ namespace DevCameraMod
                         float TrackingFloat = GUI.HorizontalSlider(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), tracker == true ? 1 : 0, 0, 1); // true = head, false = body
 
                         optionPosition += 50;
+                        GUI.Label(new Rect(60, optionPosition, 160, 20), $"[F2] Perspective: {(firstperson ? "1st" : "3rd")}");
+                        float PerspectiveFloat = GUI.HorizontalSlider(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), firstperson == true ? 1 : 0, 0, 1);
+
+                        optionPosition += 50;
+                        GUI.Label(new Rect(60, optionPosition, 160, 20), $"[F3] NameTags: {(nameTags ? "On" : "Off")}");
+                        float nameTagsFloat = GUI.HorizontalSlider(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), nameTags == true ? 1 : 0, 0, 1);
+
+                        optionPosition += 50;
                         GUI.Label(new Rect(60, optionPosition, 160, 20), $"Left team: {cameraUI.LeftTeamName}");
                         string teamName = GUI.TextArea(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), cameraUI.LeftTeamName, 200);
 
@@ -399,6 +407,12 @@ namespace DevCameraMod
 
                         listener = listenerFloat == 1;
                         tracker = TrackingFloat == 1;
+                        nameTags = nameTagsFloat == 1;
+                        if (PerspectiveFloat != (firstperson ? 1 : 0))
+                        {
+                            firstperson = PerspectiveFloat == 1;
+                            OnFirstPersonToggle(); // Call the function when the slider value changes
+                        }
 
                         canvasSize = optionPosition;
                     }
@@ -476,7 +490,6 @@ namespace DevCameraMod
 
         public void OnFirstPersonToggle()
         {
-            if (type != null) GorillaTagger.Instance.offlineVRRig.tagSound.PlayOneShot(type);
             camera.transform.SetParent(cameraParent, false);
             updateHideCosmetics = true;
         }
@@ -1112,7 +1125,7 @@ namespace DevCameraMod
             string patchedMilliseconds = timeSpan.Milliseconds.ToString().Replace("-", "");
             string patchedSeconds = timeSpan.Seconds.ToString();
             string patchedMinutes = timeSpan.Minutes.ToString();
-            string patchedHours = timeSpan.Hours.ToString(); // no way lmao, hi
+            string patchedHours = timeSpan.Hours.ToString(); // no way lmao
 
             string fixedSeconds = $"{(patchedMinutes != "0" ? (patchedSeconds.Length == 1 ? string.Format("0{0}", patchedSeconds) : patchedSeconds) : patchedSeconds)}";
             string fixedMilliseconds = $"{(patchedMilliseconds.Length >= 2 ? patchedMilliseconds.Substring(0, 2) : (patchedMilliseconds.Length == 1 ? string.Format("0{0}", patchedMilliseconds) : patchedMilliseconds))}";
