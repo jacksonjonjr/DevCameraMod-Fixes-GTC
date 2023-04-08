@@ -27,6 +27,8 @@ This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not 
 - [X] NameTag Slider
 
 # TODO: 
+- [ ] idk
+- Procrastinating:
 - [ ] Shrink menu size
 - [ ] Add the ability to disable CGT sponsors.
 - [ ] Reformat and rewrite a bit of da code. ex: CameraModes.
