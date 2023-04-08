@@ -200,7 +200,7 @@ namespace DevCameraMod
             cameraUI.codeSecret = uiObject.transform.Find("Scoreheader (1)").GetComponent<Text>();
             cameraUI.scoreHeader = uiObject.transform.Find("Scoreheader").GetComponent<Text>();
 
-            follower = FindObjectOfType<GorillaCameraFollow>();
+           follower = FindObjectOfType<GorillaCameraFollow>();
 
             cameraUI.canvas.enabled = false;
             cameraUI.leftTeam.text = "left";
