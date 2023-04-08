@@ -63,6 +63,7 @@ namespace DevCameraMod
         public float right = 0.3566f;
         public float up = 0.8648f;
         public bool listener;
+        public bool tracker;
         public float cameraLerp = 0.07f;
         public float quatLerp = 0.085f;
         public float editFOV = 60;
@@ -371,6 +372,10 @@ namespace DevCameraMod
                         float listenerFloat = GUI.HorizontalSlider(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), listener == true ? 1 : 0, 0, 1);
 
                         optionPosition += 50;
+                        GUI.Label(new Rect(60, optionPosition, 160, 20), $"Camera Tracking: {(tracker ? "Head" : "Body")}");
+                        float TrackingFloat = GUI.HorizontalSlider(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), tracker == true ? 1 : 0, 0, 1); // true = head, false = body
+
+                        optionPosition += 50;
                         GUI.Label(new Rect(60, optionPosition, 160, 20), $"Left team: {cameraUI.LeftTeamName}");
                         string teamName = GUI.TextArea(new Rect(25 + 10 / 2, optionPosition + 30, 170, 20), cameraUI.LeftTeamName, 200);
 
@@ -393,6 +398,7 @@ namespace DevCameraMod
                         }
 
                         listener = listenerFloat == 1;
+                        tracker = TrackingFloat == 1;
 
                         canvasSize = optionPosition;
                     }
@@ -1026,24 +1032,75 @@ namespace DevCameraMod
 
         public Vector3 GetPositionBasedOnRig(VRRig rig)
         {
-            Transform head = rig.headMesh.transform;
-            Vector3 position = head.position + head.forward * 1.75f * -1;
+            // while "listener" = true, run this code:
+            if (tracker)
+            {
+                Transform head = rig.headMesh.transform;
+                Vector3 position = head.position + head.forward * 1.75f * -1;
 
-            position += rig.headMesh.transform.right * 0.25f;
-            position += rig.headMesh.transform.up * 0.1f;
+                position += rig.headMesh.transform.right * 0.25f;
+                position += rig.headMesh.transform.up * 0.1f;
 
-            return position;
+                return position;
+            }
+            else if (!tracker)
+            {
+                Transform head = rig.headMesh.transform.parent;
+                Vector3 position = head.position;
+
+                position += head.forward * (forward);
+                position += head.right * (right);
+                position += head.up * (up);
+
+                return position;
+            }
+            else
+            {
+                Debug.Log("Error getting position based on rig. cannot get camera tracker!");
+                Transform head = rig.headMesh.transform.parent;
+                Vector3 position = head.position;
+
+                position += head.forward * (forward);
+                position += head.right * (right);
+                position += head.up * (up);
+
+                return position;
+            }
+                
         }
 
         public Quaternion GetRotationBasedOnRig(VRRig rig)
         {
-            Transform head = rig.headMesh.transform;
-            Vector3 position = head.position + head.forward * 1.75f * -1;
-            position += -rig.headMesh.transform.up * 0.275f;
+            if (tracker)
+            {
+                Transform head = rig.headMesh.transform;
+                Vector3 position = head.position + head.forward * 1.75f * -1;
+                position += -rig.headMesh.transform.up * 0.275f;
 
-            Vector3 relativePos = head.position - position;
-            Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
-            return rotation;
+                Vector3 relativePos = head.position - position;
+                Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+                return rotation;
+            }
+            else if (!tracker)
+            {
+                Transform head = rig.headMesh.transform;
+                Vector3 position = GetPositionBasedOnRig(rig);
+
+                Vector3 relativePos = head.position - position;
+                Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+                return rotation;
+            }
+            else
+            {
+                Debug.Log("Cannot get rotation based on rig, tracket not true or false");
+                Transform head = rig.headMesh.transform;
+                Vector3 position = head.position + head.forward * 1.75f * -1;
+                position += -rig.headMesh.transform.up * 0.275f;
+
+                Vector3 relativePos = head.position - position;
+                Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+                return rotation;
+            }
         }
 
         #endregion
@@ -1094,6 +1151,8 @@ namespace DevCameraMod
 
             playerListener.enabled = !listener;
             cameraListener.enabled = listener;
+
+            
 
             if (Keyboard.current.f2Key.wasPressedThisFrame)
             {

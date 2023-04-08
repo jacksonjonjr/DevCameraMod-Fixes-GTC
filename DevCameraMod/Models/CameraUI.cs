@@ -29,7 +29,6 @@ namespace DevCameraMod.Models
         public string LeftTeamName = "left";
         public string RightTeamName = "right";
 
-        
 
         public void AdjustTeam(bool add, bool team)
         {
