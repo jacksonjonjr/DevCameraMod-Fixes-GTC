@@ -19,9 +19,6 @@ using Photon.Voice;
 
 namespace DevCameraMod
 {
-    /// <summary>
-    /// This is the main script for my camera mod.
-    /// </summary>
     [BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
     public class Plugin : BaseUnityPlugin
     {
@@ -117,6 +114,9 @@ namespace DevCameraMod
         public bool timeStart;
         public bool hasPassedzero;
 
+        // Other
+        private int AverageDistance;
+
         // Game
         public GorillaTagManager gtm;
 
@@ -200,7 +200,18 @@ namespace DevCameraMod
             cameraUI.codeSecret = uiObject.transform.Find("Scoreheader (1)").GetComponent<Text>();
             cameraUI.scoreHeader = uiObject.transform.Find("Scoreheader").GetComponent<Text>();
 
-           follower = FindObjectOfType<GorillaCameraFollow>();
+            try
+            {
+                cameraUI.Sponsors.gameObject.SetActive(false);
+            }
+            catch
+            {
+                Debug.Log("Sponsors not found");
+            }
+            
+
+
+            follower = FindObjectOfType<GorillaCameraFollow>();
 
             cameraUI.canvas.enabled = false;
             cameraUI.leftTeam.text = "left";
@@ -830,6 +841,7 @@ namespace DevCameraMod
                     }
                     totalDist = dist.Sum();
                     lavaDistances.Add(totalDist);
+                    AverageDistance = (int)Math.Round(totalDist / (survivorGorillas.Count + infectedGorillas.Count));
                 }
 
                 VRRig currentToFollow = null;
@@ -1211,7 +1223,14 @@ namespace DevCameraMod
                     scoreboardUpdate = Time.time + 0.5f;
                     cameraUI.scoreboardText.text = "";
                     cameraUI.scoreboardText2.text = "";
-                    cameraUI.scoreHeader.text = $"Scoreboard (Caster Ping: {PhotonNetwork.GetPing()})";
+                    if (cameraMode == CameraModes.SurvivorFocus | cameraMode == CameraModes.LavaFocus)
+                    {
+                        cameraUI.scoreHeader.text = $"Average Distance: ~{3 * AverageDistance}ft.";
+                    }
+                    else
+                    {
+                        cameraUI.scoreHeader.text = $"Scoreboard (Caster Ping: {PhotonNetwork.GetPing()})";
+                    }
                     for (int i = 0; i < GorillaParent.instance.vrrigs.Count; i++)
                     {
                         string col = GorillaParent.instance.vrrigs[i].setMatIndex == 0 ? ColorUtility.ToHtmlStringRGBA(GorillaParent.instance.vrrigs[i].materialsToChangeTo[0].color) : "751C00";
