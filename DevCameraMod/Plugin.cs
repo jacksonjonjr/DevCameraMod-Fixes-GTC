@@ -284,6 +284,45 @@ namespace DevCameraMod
             }
         }
 
+        private void Update()
+        {
+
+            string[] removeObject = new string[]
+            {
+                "Image (1)",
+                "Image (2)",
+                "Versus",
+                "TeamName1",
+                "TeamName2",
+                "TeamPoints1",
+                "TeamPoints2",
+                "CurrentTime",
+                "InfoText",
+                "InfoText",
+                "CurrentTime (1)",
+                "TimeHeader",
+                "TimeHeader (1)",
+                "VersionTexA",
+                "RawImage (1)",
+                "VersionTex",
+                "Scoreheader (1)",
+                "RawImage (2)",
+                "VersionTex (1)",
+                "RawImage (3)",
+                "VersionTex (2)"
+            };
+
+            foreach (var Gname in removeObject)
+            {
+
+                try
+                {
+                    GameObject UIO = GameObject.Find("DevCameraUI(Clone)/" + Gname);
+                    UIO.SetActive(false);
+                } catch { }
+            }
+        }
+
         public void OnInitialized()
         {
             /* Code here runs after the game initializes (i.e. GorillaLocomotion.Player.Instance != null) */
