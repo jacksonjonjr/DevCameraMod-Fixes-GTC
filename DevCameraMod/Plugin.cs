@@ -16,6 +16,7 @@ using System.Threading;
 using Photon.Voice.PUN;
 using System.Net.Http;
 using Photon.Voice;
+using System.Collections;
 
 namespace DevCameraMod
 {
@@ -56,7 +57,7 @@ namespace DevCameraMod
         public float currentSpeed = 2.5f;
         public float currentMultiplier = 1;
         public float rotationMultiplier = 8.5f;
-        public float forward = -1.38f;
+        public float forward = -1f;
         public float right = 0.3566f;
         public float up = 0.8648f;
         public bool listener;
@@ -64,7 +65,7 @@ namespace DevCameraMod
         public float cameraLerp = 0.07f;
         public float quatLerp = 0.085f;
         public float editFOV = 60;
-        public float FOV = 60;
+        public float FOV = 100;
         public float editClipPlane = 0.03f;
         public float clipPlane = 0.03f;
         public float clipPlaneFar = 10000;
@@ -146,10 +147,141 @@ namespace DevCameraMod
             { CameraModes.LavaFocus, "TaggerFocus" }
         };
 
+
         protected void Awake()
         {
             Instance = this;
-            HarmonyPatches.HarmonyPatches.ApplyHarmonyPatches();
+            //HarmonyPatches.HarmonyPatches.ApplyHarmonyPatches();
+
+            StartCoroutine(Delay());
+        }
+
+        internal IEnumerator Delay()
+        {
+            yield return new WaitForSecondsRealtime(10);
+            
+            OnInitialized();
+            yield break;
+        }
+
+        public float autoRoomJoinLastCheck = 0;
+        public float UPDATEDTHELISTCRY = 0;
+
+        GameObject level = null;
+        Transform[] ChildrenTras = null;
+        private void Update()
+        {
+
+            nameTags = true;
+
+            cameraMode = CameraModes.SurvivorFocus;
+            OnModeChange();
+          
+            listener = true;
+            forward = -1f;
+            FOV = 100;
+            
+            //Handle Turning on the other maps
+
+            string[] searchNames = new string[]
+            {
+                "city",
+                "mountain",
+                "beach",
+                "ForestToBeach_Prefab_V4",
+                "canyon",
+                "cave",
+                "skyjungle",
+                "newsky"
+            };
+
+            /*if (UPDATEDTHELISTCRY + 10 < Time.time)
+            {
+                UPDATEDTHELISTCRY = Time.time;
+                level = GameObject.Find("Level");
+                ChildrenTras = level.GetComponentsInChildren<Transform>(true);
+                
+                foreach (Transform transform in ChildrenTras)
+                {
+                    foreach (string Name in searchNames)
+                    {
+                        try
+                        {
+                            if (transform.gameObject.name == Name && transform.gameObject.active == false)
+                            {
+                                transform.gameObject.SetActive(true);
+                            }
+                        } catch { }
+
+                    }
+                
+                }
+
+            }*/
+
+
+
+            try
+            {
+                GameObject RAIN = GameObject.Find("CosmeticsRoomAnchor/rain");
+                RAIN.SetActive(false);
+            }
+            catch
+            {}
+            
+
+            if (PhotonNetwork.InRoom == false)
+            {
+                if (autoRoomJoinLastCheck + 8 < Time.time)
+                {
+                    GorillaNetworking.PhotonNetworkController.Instance.AttemptToJoinSpecificRoom("GTC");
+                    autoRoomJoinLastCheck = Time.time;
+                }
+                
+            }
+
+
+
+            string[] removeObject = new string[]
+            {
+                "Image (1)",
+                "Image (2)",
+                "Versus",
+                "TeamName1",
+                "TeamName2",
+                "TeamPoints1",
+                "TeamPoints2",
+                "CurrentTime",
+                "InfoText",
+                "InfoText",
+                "CurrentTime (1)",
+                "TimeHeader",
+                "TimeHeader (1)",
+                "VersionTexA",
+                "RawImage (1)",
+                "VersionTex",
+                "Scoreheader (1)",
+                "RawImage (2)",
+                "VersionTex (1)",
+                "RawImage (3)",
+                "VersionTex (2)"
+            };
+
+            try
+            {
+                GameObject Legal = GameObject.Find("Global/LegalAgreementCheck");
+                Legal.SetActive(false);
+            } catch {}
+
+            foreach (var Gname in removeObject)
+            {
+
+                try
+                {
+                    GameObject UIO = GameObject.Find("DevCameraUI(Clone)/" + Gname);
+                    UIO.SetActive(false);
+                } catch { }
+            }
         }
 
         public void OnInitialized()
@@ -498,6 +630,31 @@ namespace DevCameraMod
             }
         }
 
+        public static VRRig StaticFindRigForPlayer(Photon.Realtime.Player player)
+        {
+	        if (player == null)
+	        {
+		        return null;
+	        }
+	        if (!GorillaParent.hasInstance)
+	        {
+		        GorillaParent.instance = UnityEngine.Object.FindObjectOfType<GorillaParent>();
+		        GorillaParent.hasInstance = true;
+	        }
+	        VRRig vrrig;
+	        if (GorillaParent.instance.vrrigDict.TryGetValue(player, out vrrig))
+	        {
+		        return vrrig;
+	        }
+	        foreach (VRRig vrrig2 in GorillaParent.instance.vrrigs)
+	        {
+		        if (!vrrig2.isOfflineVRRig && vrrig2.GetComponent<PhotonView>().Owner == player)
+		        {
+			        return vrrig2;
+		        }
+	        }
+	        return null;
+        }
 
         public void OnFirstPersonToggle()
         {
@@ -616,7 +773,9 @@ namespace DevCameraMod
             {
                 // Generates the lists mentioned above
 
-                foreach (var inf in gtm.currentInfected) if (gtm.FindVRRigForPlayer(inf).GetComponent<VRRig>() != null) infectedGorillas.Add(gtm.FindVRRigForPlayer(inf).GetComponent<VRRig>());
+                //Debug.Log(gtm.currentInfected);
+
+                foreach (var inf in gtm.currentInfected) if (StaticFindRigForPlayer(inf) != null) infectedGorillas.Add(StaticFindRigForPlayer(inf));
                 foreach (var gorilla in GorillaParent.instance.vrrigs) if (!infectedGorillas.Contains(gorilla)) survivorGorillas.Add(gorilla);
             }
             catch (System.Exception e)
@@ -635,6 +794,9 @@ namespace DevCameraMod
                     }
                 }
             }
+
+            //Debug.Log("Infected count" + infectedGorillas.Count);
+            //Debug.Log("SURF COUNT" + survivorGorillas.Count);
 
             // IF the method needs to find infected players but focus on survivors if the infected is closer to the survivor
             // EX: Focus on an infected player if they're the closest to the survivors
@@ -1158,18 +1320,26 @@ namespace DevCameraMod
 
             float fixedClip = clipPlane;
             if (cameraMode == CameraModes.DefEnhanced && PhotonNetwork.InRoom) fixedClip = clipPlane * GorillaTagger.Instance.myVRRig.transform.localScale.y;
-            if (cameraMode == CameraModes.ActivitySpan) fixedClip = clipPlane * toRig.transform.localScale.y;
-            if (cameraMode == CameraModes.SurvivorFocus) fixedClip = clipPlane * toRig.transform.localScale.y;
-            if (cameraMode == CameraModes.LavaFocus) fixedClip = clipPlane * toRig.transform.localScale.y;
+            if (toRig != null)
+            {
+                if (cameraMode == CameraModes.ActivitySpan) fixedClip = clipPlane * toRig.transform.localScale.y;
+                if (cameraMode == CameraModes.SurvivorFocus) fixedClip = clipPlane * toRig.transform.localScale.y;
+                if (cameraMode == CameraModes.LavaFocus) fixedClip = clipPlane * toRig.transform.localScale.y;
+            }
+
             if (cameraMode == CameraModes.SelectedPlayer) fixedClip = clipPlane * GorillaParent.instance.vrrigs[rigtofollow].transform.localScale.y;
             editClipPlane = cameraMode == CameraModes.Default ? Mathf.Lerp(editClipPlane, 0.01f, 0.075f) : Mathf.Lerp(editClipPlane, fixedClip, 0.075f);
             camera.nearClipPlane = editClipPlane;
 
             float fixedFOV = FOV;
             if (cameraMode == CameraModes.DefEnhanced && PhotonNetwork.InRoom) fixedFOV = FOV * GorillaTagger.Instance.myVRRig.transform.localScale.y;
-            if (cameraMode == CameraModes.ActivitySpan) fixedFOV = FOV * toRig.transform.localScale.y;
-            if (cameraMode == CameraModes.SurvivorFocus) fixedFOV = FOV * toRig.transform.localScale.y;
-            if (cameraMode == CameraModes.LavaFocus) fixedFOV = FOV * toRig.transform.localScale.y;
+            if (toRig != null)
+            {
+                if (cameraMode == CameraModes.ActivitySpan) fixedFOV = FOV * toRig.transform.localScale.y;
+                if (cameraMode == CameraModes.SurvivorFocus) fixedFOV = FOV * toRig.transform.localScale.y;
+                if (cameraMode == CameraModes.LavaFocus) fixedFOV = FOV * toRig.transform.localScale.y;
+            }
+
             if (cameraMode == CameraModes.SelectedPlayer) fixedFOV = FOV * GorillaParent.instance.vrrigs[rigtofollow].transform.localScale.y;
             editFOV = cameraMode == CameraModes.Default ? Mathf.Lerp(editFOV, 60, 0.075f) : Mathf.Lerp(editFOV, fixedFOV, 0.075f);
             camera.fieldOfView = editFOV;
@@ -1234,7 +1404,7 @@ namespace DevCameraMod
                     for (int i = 0; i < GorillaParent.instance.vrrigs.Count; i++)
                     {
                         string col = GorillaParent.instance.vrrigs[i].setMatIndex == 0 ? ColorUtility.ToHtmlStringRGBA(GorillaParent.instance.vrrigs[i].materialsToChangeTo[0].color) : "751C00";
-                        bool isTalking = GorillaParent.instance.vrrigs[i].GetComponent<PhotonVoiceView>().IsSpeaking || GorillaParent.instance.vrrigs[i].GetComponent<PhotonVoiceView>().IsRecording;
+                        bool isTalking = false;
                         if (i >= 5) cameraUI.scoreboardText2.text += $"<color=#{(isTalking ? "FFFFFF" : "8E8E8E")}>{i}.</color> <color=#{col}>{GorillaParent.instance.vrrigs[i].playerText.text}</color>\n";
                         else cameraUI.scoreboardText.text += $"<color=#{(isTalking ? "FFFFFF" : "8E8E8E")}>{i}.</color> <color=#{col}>{GorillaParent.instance.vrrigs[i].playerText.text}</color>\n";
                     }
@@ -1609,6 +1779,14 @@ namespace DevCameraMod
             }
 
             wasInRoom = PhotonNetwork.InRoom;
+
+
+
+
+
+
+            
+            
         }
     }
 }
